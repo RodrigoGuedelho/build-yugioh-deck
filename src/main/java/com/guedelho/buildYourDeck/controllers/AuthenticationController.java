@@ -7,6 +7,8 @@ import com.guedelho.buildYourDeck.requestDtos.AuthenticationDTO;
 import com.guedelho.buildYourDeck.responseDtos.LoginResponseDTO;
 import com.guedelho.buildYourDeck.requestDtos.UserRegisterDTO;
 import com.guedelho.buildYourDeck.security.TokenService;
+import com.guedelho.buildYourDeck.services.AuthenticationService;
+import com.guedelho.buildYourDeck.services.AuthorizationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,20 +22,13 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*")
 public class AuthenticationController {
     @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
     private UserRepository userRepository;
     @Autowired
-    private TokenService tokenService;
+    private AuthenticationService authenticationService;
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data){
-        var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
-        var auth = this.authenticationManager.authenticate(usernamePassword);
-
-        var token = tokenService.generateToken((User) auth.getPrincipal());
-
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+        return ResponseEntity.ok(authenticationService.login(data));
     }
 
     @PostMapping("/register")
