@@ -24,8 +24,10 @@ public class Card {
     private BigDecimal atk;
     private BigDecimal def;
     private String race;
-    private String atribute;
+    private String attribute;
     private String archetype;
+    @Column(unique = true)
+    private Long cardApiId;
     @OneToOne(cascade = CascadeType.ALL)
     private Image image;
 

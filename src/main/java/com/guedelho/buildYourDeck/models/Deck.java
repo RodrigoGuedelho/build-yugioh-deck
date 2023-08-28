@@ -17,9 +17,10 @@ public class Deck {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_deck")
     private Long id;
     private String description;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     private List<Card> cards;
-    @OneToOne
+    @OneToOne()
+    @JoinColumn(unique = false)
     private User user;
 
     @Override
