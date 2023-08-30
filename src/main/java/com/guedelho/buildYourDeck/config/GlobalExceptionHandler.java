@@ -25,9 +25,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus()
     public ResponseEntity<Object> badRequestException(BadCredentialsException ex) {
-        ResponseException response = new ResponseException(HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(), ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(response) ;
+        ResponseException response = new ResponseException(HttpStatus.FORBIDDEN.value(),
+                HttpStatus.FORBIDDEN.getReasonPhrase(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN.value()).body(response) ;
     }
 
     @ExceptionHandler(Exception.class)
