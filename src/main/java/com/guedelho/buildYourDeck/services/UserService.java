@@ -1,5 +1,6 @@
 package com.guedelho.buildYourDeck.services;
 
+import com.guedelho.buildYourDeck.enums.UserRole;
 import com.guedelho.buildYourDeck.exceptions.BadRequestException;
 import com.guedelho.buildYourDeck.models.User;
 import com.guedelho.buildYourDeck.repository.UserRepository;
@@ -19,10 +20,10 @@ public class UserService {
 
     public User save(UserRegisterDTO data) {
         if(this.userRepository.findByLogin(data.login()) != null)
-            throw new BadRequestException("The user with that login name already exists.");
+            throw new BadRequestException("Usuário com esse nome de login já existe.");
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-        User newUser = new User(data.login(), data.name(), encryptedPassword, data.role());
+        User newUser = new User(data.login(), data.name(), encryptedPassword, UserRole.USER);
 
         return this.userRepository.save(newUser);
     }
