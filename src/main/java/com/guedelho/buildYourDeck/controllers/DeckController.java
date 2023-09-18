@@ -9,7 +9,6 @@ import com.guedelho.buildYourDeck.services.DeckService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +17,7 @@ import java.io.IOException;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping(value = "/decks")
+@RequestMapping(value = "/v1/decks")
 public class DeckController {
     @Autowired
     private ModelMapper modelMapper;
@@ -48,10 +47,10 @@ public class DeckController {
         return ResponseEntity.ok(deckService.addCard(toEntity(cardDto), id, token));
     }
 
-    @DeleteMapping("/{id}/cards")
+    @DeleteMapping("/{id}/cards/{cardApiId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeCard(@RequestHeader("Authorization") String token, @PathVariable("id") Long id, @RequestBody CardDTO cardDto) {
-        deckService.removeCard(toEntity(cardDto), id, token);
+    public void removeCard(@RequestHeader("Authorization") String token, @PathVariable("id") Long id, @PathVariable("cardApiId") Long cardApiId) {
+        deckService.removeCard(id, cardApiId, token);
     }
 
     private Card toEntity(CardDTO data) {

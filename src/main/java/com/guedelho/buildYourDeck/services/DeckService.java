@@ -11,6 +11,7 @@ import com.guedelho.buildYourDeck.requestDtos.CardDTO;
 import com.guedelho.buildYourDeck.responseDtos.CardDto;
 import com.guedelho.buildYourDeck.responseDtos.DeckResponse;
 import com.guedelho.buildYourDeck.security.TokenService;
+import com.guedelho.buildYourDeck.utils.CardConvert;
 import com.guedelho.buildYourDeck.utils.FileUtil;
 import com.guedelho.buildYourDeck.utils.TokenUtil;
 import org.modelmapper.ModelMapper;
@@ -40,10 +41,8 @@ public class DeckService {
     private CardRepository cardRepository;
     @Autowired
     private CardService cardService;
-
-    @Value("${api.images.directory.cards}")
-    private String directoryImages;
-
+    @Autowired
+    private CardConvert cardConvert;
     @Autowired
     private ModelMapper modelMapper;
 
@@ -74,15 +73,18 @@ public class DeckService {
         return deck.getCards().get(deck.getCards().size()-1);
     }
 
-    public void removeCard(Card card, Long id, String token) {
+    public void removeCard(Long id, Long cardApiId, String token) {
         Optional<Deck> deckOptional = deckRepository.findById(id);
         User user = userService.findByToken(token);
         BadRequestException exception = validate(deckOptional, user);
+        Optional<Card> card = cardRepository.findByCardApiId(cardApiId);
         if (exception != null)
             throw exception;
+        if (card.isEmpty())
+            throw new BadRequestException("Card not exist.");
 
         Deck deck = deckOptional.get();
-        deck.getCards().remove(card);
+        deck.getCards().remove(card.get());
         deckRepository.save(deck);
     }
 
@@ -93,7 +95,7 @@ public class DeckService {
 
     public Page<CardDTO> findCards(String token, Long deckId, int pageNumber, int pageSize) throws IOException {
         var user = userService.findByToken(token);
-        List<CardDTO> cards = toCollectionDto(
+        List<CardDTO> cards = cardConvert.toCollectionDto(
                 deckRepository.findCardsDeck(user.getId(), deckId, pageNumber, pageSize));
 
         Page<CardDTO> page = new PageImpl<>(cards);
@@ -106,20 +108,5 @@ public class DeckService {
         if (!deckOptional.get().getUser().equals(user))
             return new BadRequestException("User does not own this deck.");
         return null;
-    }
-
-    private CardDTO toClassDto(CardDto cardDto) throws IOException {
-        CardDTO card = modelMapper.map(cardDto, CardDTO.class);
-        card.setImage(FileUtil.getImage(directoryImages + cardDto.getImage()));
-        card.setImageSmall(FileUtil.getImage(directoryImages + cardDto.getImageSmall()));
-        card.setImageCropped(FileUtil.getImage(directoryImages + cardDto.getImageCropped()));
-        return card;
-    }
-
-    private List<CardDTO> toCollectionDto(List<CardDto> cards) throws IOException {
-        List<CardDTO> cardDTOS = new ArrayList<>();
-        for (CardDto cardDto: cards)
-            cardDTOS.add(toClassDto(cardDto));
-        return cardDTOS;
     }
 }
