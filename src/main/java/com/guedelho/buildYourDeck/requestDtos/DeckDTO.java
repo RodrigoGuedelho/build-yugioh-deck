@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 public class DeckDTO {
-    @NotBlank
+    @NotBlank(message = "Descrição não informada.")
     private String description;
     private List<CardDTO> cards;
 }
