@@ -88,6 +88,15 @@ public class DeckService {
         deckRepository.save(deck);
     }
 
+    public void remove(Long id, String token) {
+        Optional<Deck> deckOptional = deckRepository.findById(id);
+        User user = userService.findByToken(token);
+        BadRequestException exception = validate(deckOptional, user);
+        if (exception != null)
+            throw exception;
+        deckRepository.delete(deckOptional.get());
+    }
+
     public List<DeckResponse> find(String token) {
         var user = userService.findByToken(token);
         return deckRepository.find(user.getId());

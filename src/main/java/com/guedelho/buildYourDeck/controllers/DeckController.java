@@ -53,6 +53,12 @@ public class DeckController {
         deckService.removeCard(id, cardApiId, token);
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remove(@RequestHeader("Authorization") String token, @PathVariable("id") Long id) {
+        deckService.remove(id, token);
+    }
+
     private Card toEntity(CardDTO data) {
         Card card = modelMapper.map(data, Card.class);
         return card;
