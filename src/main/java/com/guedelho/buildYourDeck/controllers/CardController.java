@@ -15,7 +15,12 @@ public class CardController {
     private CardService cardService;
 
     @GetMapping
-    public ResponseEntity<Object> findCards(@RequestParam(value = "name", required = true) String name) throws IOException {
-        return ResponseEntity.ok(cardService.findCards(name));
+    public ResponseEntity<Object> findCards(@RequestParam(value = "name", required = false, defaultValue = "") String name,
+                                            @RequestParam(value = "type", required = false, defaultValue = "") String type,
+                                            @RequestParam(value = "level", required = false, defaultValue = "0") int level,
+                                            @RequestParam(value = "race", required = false, defaultValue = "") String race,
+                                            @RequestParam(value = "attribute", required = false, defaultValue = "") String attribute,
+                                            @RequestParam(value = "externalSearch", required = false, defaultValue = "false") boolean externalSearch) throws IOException {
+        return ResponseEntity.ok(cardService.findCards(name, type, level, race, attribute, externalSearch));
     }
 }

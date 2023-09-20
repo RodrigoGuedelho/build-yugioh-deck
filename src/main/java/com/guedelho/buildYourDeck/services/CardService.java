@@ -8,9 +8,11 @@ import com.guedelho.buildYourDeck.utils.CardConvert;
 import com.guedelho.buildYourDeck.utils.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -50,14 +52,27 @@ public class CardService {
         return cardRepository.save(card);
     }
 
-    public List<CardDTO> findCards(String cardName) throws IOException {
-        List<Card> cards = cardRepository.findByName(cardName.toLowerCase());
-        JsonNode cardsAux = null;
-         List<CardDTO> cardDTOs = cardConvert.toCollection(cards);
-        if (cards.isEmpty()) {
-            cardsAux = apiYugiohProDeckService.findCards(cardName);
-            cardDTOs = cardConvert.toCollection(cardsAux.get("data"));
+    public List<CardDTO> findCards(String cardName, String type, int level,
+                                   String race, String attribute, boolean externalSearch) throws IOException {
+
+        if (!externalSearch) {
+            List<Card> cards = cardRepository.find(
+                    "%" + cardName.toLowerCase() + "%",
+                    "%" + type.toLowerCase() + "%",
+                    level,
+                    "%" + race.toLowerCase() + "%",
+                    "%" + attribute.toLowerCase() + "%"
+                    );
+            List<CardDTO> cardDTOs = cardConvert.toCollection(cards);
+            return cardDTOs;
         }
+
+        JsonNode cardsAux = apiYugiohProDeckService.findCards(cardName.toLowerCase(),
+                type.toLowerCase(), level, race.toLowerCase(),
+                attribute.toLowerCase());
+        List<CardDTO> cardDTOs = new ArrayList<>();
+        if (cardsAux != null)
+            cardDTOs = cardConvert.toCollection(cardsAux.get("data"));
         return cardDTOs;
     }
 
