@@ -1,0 +1,11 @@
+version: '3.3'
+services:
+   build-your-deck:
+    image: openjdk
+    container_name: build-your-deck
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    restart: always
