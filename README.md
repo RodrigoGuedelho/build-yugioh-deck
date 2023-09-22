@@ -32,7 +32,7 @@ Com o projeto clonado, acesse o diretório e instale todas as dependências nece
 
 ```bash
 cd cloudplus_dashboard_back
-mvn clean install 
+./mvnw clean install 
 ```
 
 
@@ -58,7 +58,7 @@ Inicie a aplicação
 Para gerar o build da aplicação: 
 
 ```bash
-mvn clean install
+./mvnw clean install
 ```
 
 
