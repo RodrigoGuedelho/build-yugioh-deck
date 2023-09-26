@@ -20,6 +20,7 @@ public class Card {
     @Column(name = "frame_type")
     private String frameType;
     private int level;
+    @Column(length = 5000)
     private String description;
     private BigDecimal atk;
     private BigDecimal def;
