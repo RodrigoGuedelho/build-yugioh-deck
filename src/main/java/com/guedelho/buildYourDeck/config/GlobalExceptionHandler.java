@@ -5,6 +5,7 @@ import com.guedelho.buildYourDeck.responseDtos.ResponseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -40,6 +41,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> badCredentialsException(BadCredentialsException ex) {
         ResponseException response = new ResponseException(HttpStatus.FORBIDDEN.value(),
                 HttpStatus.FORBIDDEN.getReasonPhrase(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN.value()).body(response) ;
+    }
+
+    @ExceptionHandler(InternalAuthenticationServiceException.class)
+    @ResponseStatus()
+    public ResponseEntity<Object> internalAuthenticationServiceException(InternalAuthenticationServiceException ex) {
+        ResponseException response = new ResponseException(HttpStatus.FORBIDDEN.value(),
+                HttpStatus.FORBIDDEN.getReasonPhrase(), "Usuário não existe.");
         return ResponseEntity.status(HttpStatus.FORBIDDEN.value()).body(response) ;
     }
 
