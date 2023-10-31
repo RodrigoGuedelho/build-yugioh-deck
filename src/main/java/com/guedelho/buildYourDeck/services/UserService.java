@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
+
 @Service
 public class UserService {
     @Autowired
@@ -26,6 +29,19 @@ public class UserService {
         User newUser = new User(data.login(), data.name(), encryptedPassword, UserRole.USER);
 
         return this.userRepository.save(newUser);
+    }
+
+    public User update(UserRegisterDTO data, String token) {
+        User user = findByToken(token);
+        User userComparation = userRepository.findByLogin(data.login());
+
+        if(userComparation != null && userComparation.getLogin().equals(data.login()) && !user.getId().equals(userComparation.getId()))
+            throw new BadRequestException("Usuário com esse nome de login já existe.");
+
+        String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
+        User updateUser = new User(data.login(), data.name(), encryptedPassword, UserRole.USER);
+        updateUser.setId(user.getId());
+        return this.userRepository.save(updateUser);
     }
 
     public User findByToken(String token){
