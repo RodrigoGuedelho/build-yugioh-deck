@@ -23,7 +23,7 @@ public class User implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_user")
     private Long id;
-    @Column(length = 50)
+    @Column(length = 50, unique = true)
     private String login;
     @Column(length = 80)
     private String name;

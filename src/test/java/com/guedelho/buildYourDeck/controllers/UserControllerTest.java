@@ -9,6 +9,7 @@ import com.guedelho.buildYourDeck.utils.GenericTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -56,16 +57,16 @@ public class UserControllerTest extends GenericTest {
     @Test
     @DisplayName("It Must return bad request when an attribute is not provided.")
     public void updateMustReturnBadRequest() throws Exception {
-        UserRegisterDTO request =  new UserRegisterDTO("",
+        UserRegisterDTO request = new UserRegisterDTO("",
                 "", "");
         ObjectWriter objectWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
         String requestJson = objectWriter.writeValueAsString(request);
 
         mockMvc.perform(put("/v1/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + getTokenApi())
-                .content(requestJson)
-        ).andExpect(status().isBadRequest());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + getTokenApi())
+                        .content(requestJson)
+                ).andExpect(status().isBadRequest());
     }
 
     @Test

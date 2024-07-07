@@ -1,4 +1,7 @@
 package com.guedelho.buildYourDeck.requestDtos;
 
-public record AuthenticationDTO(String login, String password) {
+import jakarta.validation.constraints.NotBlank;
+
+public record AuthenticationDTO(@NotBlank(message = "Login não informado.") String login,
+                                @NotBlank(message = "Senha não informada.")String password) {
 }
