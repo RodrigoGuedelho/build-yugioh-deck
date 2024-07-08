@@ -4,6 +4,7 @@ import com.guedelho.buildYourDeck.requestDtos.AuthenticationDTO;
 import com.guedelho.buildYourDeck.requestDtos.UserRegisterDTO;
 import com.guedelho.buildYourDeck.services.AuthenticationService;
 import com.guedelho.buildYourDeck.services.UserService;
+import com.guedelho.buildYourDeck.services.impl.AuthenticationServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
